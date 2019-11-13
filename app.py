@@ -9,7 +9,7 @@
 import logging
 import logging.config
 import os
-
+import sys
 import tornado.httpserver
 import tornado.ioloop
 import tornado.options
@@ -25,11 +25,12 @@ debug = os.environ.get("RUN_ENV")
 
 LOG = logging.getLogger(__name__)
 
-LOG.error("xxxx")
-
-
 class LogHandler(object):
-    """设置tornado 日志信息 当设置RUN_ENV为prod的时候进行文件输出,否则控制台"""
+
+    """设置tornado 日志信息 当设置RUN_ENV为prod的时候进行文件输出,否则控制台
+       python3 会有问题... 不是大问题, 不在细化研究...使用supervisor管理python
+    """
+
     def __init__(self):
         if debug == "prod":
             define("log_file_prefix", default=LOGFILE)
@@ -43,8 +44,9 @@ class LogHandler(object):
             define("log_to_stderr", default=False)
         super(LogHandler, self).__init__()
 
-
-LogHandler()
+p_version = sys.version_info.major
+if p_version ==2:
+    LogHandler()
 
 
 class RouteHandler(object):
