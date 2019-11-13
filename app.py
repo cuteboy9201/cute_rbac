@@ -4,7 +4,7 @@
 @Author: Youshumin
 @Date: 2019-08-21 11:13:46
 @LastEditors: Youshumin
-@LastEditTime: 2019-11-13 12:05:03
+@LastEditTime: 2019-11-13 17:57:37
 '''
 import logging
 import logging.config
@@ -25,14 +25,18 @@ debug = os.environ.get("RUN_ENV")
 
 LOG = logging.getLogger(__name__)
 
+LOG.error("xxxx")
+
 
 class LogHandler(object):
     """设置tornado 日志信息 当设置RUN_ENV为prod的时候进行文件输出,否则控制台"""
-
     def __init__(self):
         if debug == "prod":
             define("log_file_prefix", default=LOGFILE)
-            define("log_rotate_mode", default="time",)
+            define(
+                "log_rotate_mode",
+                default="time",
+            )
             define("log_rotate_when", default="D")
             define("log_rotate_interval", default=1)
             define("log_file_num_backups", default=60)
@@ -45,7 +49,6 @@ LogHandler()
 
 class RouteHandler(object):
     """注册路由"""
-
     def __init__(self):
         """
         需要配置这里实现注册路由... 
@@ -67,7 +70,6 @@ class RouteHandler(object):
 
 class DB(object):
     """初始化数据库"""
-
     def __init__(self):
         self.db = mysqlHanlder()
 
@@ -79,7 +81,6 @@ class DB(object):
 
 class Application(tornado.web.Application, RouteHandler):
     """初始化application"""
-
     def __init__(self):
         configs = dict(
             # emplate_path=os.path.join(PATH_APP_ROOT, "templates"),
@@ -89,13 +90,12 @@ class Application(tornado.web.Application, RouteHandler):
         )
         DB().rbac_init()
         RouteHandler.__init__(self)
-        tornado.web.Application.__init__(
-            self, self.route.get_urls(), **configs)
+        tornado.web.Application.__init__(self, self.route.get_urls(),
+                                         **configs)
 
 
 class WebApp():
     """应用启动唯一入口"""
-
     def __init__(self):
         """
             初始化启动信息

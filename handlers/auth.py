@@ -4,7 +4,7 @@
 @Author: Youshumin
 @Date: 2019-11-12 12:38:15
 @LastEditors: Youshumin
-@LastEditTime: 2019-11-13 09:51:41
+@LastEditTime: 2019-11-13 17:51:13
 @Description: 
 '''
 import logging
@@ -22,7 +22,6 @@ LOG = logging.getLogger(__name__)
 
 @route("/rbac/auth/login")
 class AuthLogin(MixinRequestHandler):
-
     @coroutine
     def post(self):
         form = AuthLoginForm(self)
@@ -64,7 +63,6 @@ class AuthLogin(MixinRequestHandler):
 
 @route("/rbac/image/(?P<code>.*)/")
 class ImageHandler(MixinRequestHandler):
-
     @coroutine
     def get(self, code):
         code = auth.decode_md_code(code)
@@ -83,7 +81,7 @@ class ImageHandler(MixinRequestHandler):
 class CaptchaHandler(MixinRequestHandler):
     def get(self):
         code = auth.get_captcha_text()
-        md_code = auth.create_md_code(code)
-        data = {"key": md_code, "image_url": "/rbac/image/{}/".format(md_code)}
+        md_code = auth.create_md_code(code).decode()
+        data = {"key": md_code, "image_url": "/rbac/image/%s/" % md_code}
         self.send_ok(data=data)
         return

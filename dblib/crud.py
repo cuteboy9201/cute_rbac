@@ -4,7 +4,7 @@
 @Author: Youshumin
 @Date: 2019-11-12 16:33:41
 @LastEditors: Youshumin
-@LastEditTime: 2019-11-12 17:09:58
+@LastEditTime: 2019-11-13 16:33:47
 @Description: 
 '''
 
@@ -21,6 +21,7 @@ from dblib import models as ORM
 session_type = mysqlHanlder().get_session(RBAC_NAME)
 
 LOG = logging.getLogger(__name__)
+
 
 class MixDbObj(object):
     def __init__(self, table=None):
@@ -43,9 +44,11 @@ class MixDbObj(object):
                 LOG.error("delete_menu: {}".format(e))
                 self.session.rollback()
                 return False
+
     def __del__(self):
         self.session.close()
-        
+
+
 class User(MixDbObj):
     def __init__(self):
         self.table = ORM.RbacUser
@@ -241,6 +244,7 @@ class Role(object):
     def __del__(self):
         self.session.close()
 
+
 class Menu(object):
     def __init__(self):
         self.table = ORM.RbacMenu
@@ -296,11 +300,13 @@ class Menu(object):
                     self.session.commit()
                     return True, ""
             check_permission = self.db_obj.filter(
-                self.table.permission == permission, self.table.type == int(_type)).first()
+                self.table.permission == permission,
+                self.table.type == int(_type)).first()
             if check_permission:
                 return False, "权限标识已经存在"
             if int(_type) == 1:
-                check_path = self.db_obj.filter(self.table.path == path).first()
+                check_path = self.db_obj.filter(
+                    self.table.path == path).first()
                 if check_path:
                     return False, "前端路径已经存在"
             add_menu = self.table(parentId=parentId,
@@ -333,8 +339,10 @@ class Menu(object):
                 LOG.error("delete_menu: {}".format(e))
                 self.session.rollback()
                 return False
+
     def __del__(self):
         self.session.close()
+
 
 class Route(MixDbObj):
     def __init__(self):
@@ -442,7 +450,7 @@ class Interface(MixDbObj):
                                            id=create_id())
                 self.session.add(add_interface)
                 self.session.commit()
-                return True,""
+                return True, ""
         except Exception as e:
             LOG.error("save_interface: {}".format(e))
             self.session.rollback()
@@ -459,19 +467,23 @@ class Interface(MixDbObj):
             interfaceObj = interfaceObj.filter(
                 self.table.path.like("%{}%".format(rule["path"])))
         if rule.get("method"):
-            interfaceObj = interfaceObj.filter(self.table.method.like("%{}%".format(rule.get("method"))))
-        
+            interfaceObj = interfaceObj.filter(
+                self.table.method.like("%{}%".format(rule.get("method"))))
+
         # 接口总数
         interfaceDB = interfaceObj.all()
         totalCount = len(interfaceDB)
-        
+
         # 本页展示数据
         get_interface_db = interfaceObj.limit(pageSize).offset(offset_nu).all()
-        
+
         if rule.get("functionId"):
             interfaceListObj = FunctionInterface()
-            interfaceListObj = interfaceListObj.getFunctionInterfaceByFunction(rule.get("functionId"))
-            rolinterfaceListlist = [item.interfaceId for item in interfaceListObj]
+            interfaceListObj = interfaceListObj.getFunctionInterfaceByFunction(
+                rule.get("functionId"))
+            rolinterfaceListlist = [
+                item.interfaceId for item in interfaceListObj
+            ]
             for itmes in get_interface_db:
                 if itmes.id in rolinterfaceListlist:
                     itmes.isAdd = 1
@@ -538,11 +550,9 @@ class RoleFunction(MixDbObj):
         rolefunction = self.db_obj.filter(self.table.menuId == menuId).all()
         return rolefunction
 
-    def saveRoleFunction(self,roleId, permission):
+    def saveRoleFunction(self, roleId, permission):
         try:
-            print type(permission)
-            print permission
-            role_data= self.db_obj.filter(self.table.roleId == roleId).all()
+            role_data = self.db_obj.filter(self.table.roleId == roleId).all()
             if len(permission) == 0:
                 for data in role_data:
                     self.session.delete(data)
@@ -557,7 +567,9 @@ class RoleFunction(MixDbObj):
                         self.session.delete(item)
                         self.session.commit()
                 for i in permission:
-                    add_data = self.table(roleId=roleId, menuId=i, id=create_id())
+                    add_data = self.table(roleId=roleId,
+                                          menuId=i,
+                                          id=create_id())
                     self.session.add(add_data)
                     self.session.commit()
                 return True, ""
@@ -587,14 +599,18 @@ class FunctionInterface(MixDbObj):
         return functioninterface
 
     def saveFunctionInterface(self, action, funcrionId, interfaceId):
-        functioninterface = self.db_obj.filter(self.table.menuId==funcrionId, self.table.interfaceId==interfaceId).first()
+        functioninterface = self.db_obj.filter(
+            self.table.menuId == funcrionId,
+            self.table.interfaceId == interfaceId).first()
 
-        if action==0 and functioninterface:
+        if action == 0 and functioninterface:
             self.session.delete(functioninterface)
             self.session.commit()
             return True
-        elif action==1 and not functioninterface:
-            add_data = self.table(menuId=funcrionId,interfaceId=interfaceId,id=create_id())
+        elif action == 1 and not functioninterface:
+            add_data = self.table(menuId=funcrionId,
+                                  interfaceId=interfaceId,
+                                  id=create_id())
             self.session.add(add_data)
             self.session.commit()
             return True

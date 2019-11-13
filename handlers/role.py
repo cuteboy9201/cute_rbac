@@ -4,12 +4,12 @@
 @Author: Youshumin
 @Date: 2019-08-29 09:48:41
 @LastEditors: Youshumin
-@LastEditTime: 2019-11-13 10:55:57
+@LastEditTime: 2019-11-13 16:45:47
 @Description: 
 '''
 import json
 import logging
-from types import UnicodeType
+# from types import UnicodeType
 
 from tornado import gen
 
@@ -150,7 +150,7 @@ class RoleBatchDelHandler(MixinRequestHandler):
             ids = form.value_dict["ids"]
         else:
             form_error(self, form)
-        if isinstance(ids, UnicodeType):
+        if isinstance(ids, str):
             ids = json.loads(ids)
         role = crudmixin.Role()
         for id in ids:

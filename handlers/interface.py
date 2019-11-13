@@ -4,12 +4,12 @@
 @Author: Youshumin
 @Date: 2019-08-30 09:47:44
 @LastEditors: Youshumin
-@LastEditTime: 2019-11-13 12:04:28
+@LastEditTime: 2019-11-13 16:45:23
 @Description: 
 '''
 import json
 import logging
-from types import UnicodeType
+# from types import UnicodeType
 
 from oslo.form.form import form_error
 from oslo.util import dbObjFormatToJson
@@ -96,7 +96,7 @@ class InterfaceHandlers(MixinRequestHandler):
         form = interfaceBatchdelForm(self)
         if form.is_valid():
             ids = form.value_dict["ids"]
-            if isinstance(ids, UnicodeType):
+            if isinstance(ids, str):
                 ids = json.loads(ids)
         else:
             form_error(self, form)

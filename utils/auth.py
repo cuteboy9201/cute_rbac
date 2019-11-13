@@ -4,7 +4,7 @@
 @Author: Youshumin
 @Date: 2019-11-12 16:55:25
 @LastEditors: Youshumin
-@LastEditTime: 2019-11-13 10:00:48
+@LastEditTime: 2019-11-13 17:54:02
 @Description: 认证相关...
     md5_password  密码加密
     create_token  创建token
@@ -32,7 +32,8 @@ JWT_EXP_DELTA_SECONDS = 60 * 60 * 3
 
 def md5_password(nickname, password):
     salt = "59E6520E-FF4D-4020-AE44-F3A20484472B"
-    return hashlib.md5("%s%s%s" % (nickname, password, salt)).hexdigest()
+    en_str = "%s%s%s" % (nickname, password, salt)
+    return hashlib.md5(en_str.encode("utf-8")).hexdigest()
 
 
 def create_token(user_id):
@@ -119,7 +120,7 @@ def PermissionCheck(func):
         isAdmin = user.isAdmin(self.user_id)
         if isAdmin:
 
-            return(func(self, *args, **kwargs))
+            return (func(self, *args, **kwargs))
         else:
             roleuser = crudmixin.RoleUser()
             roles = roleuser.getRoleIds(self.user_id)
@@ -151,7 +152,6 @@ def PermissionCheck(func):
                 userFunctionInterfaceList)
             dict_interface = [dbObjFormatToJson(item) for item in interfacedb]
             if not dict_interface:
-                print dict_interface
                 self.send_fail_json(msg="没有权限")
                 return
             return func(self, *args, **kwargs)
