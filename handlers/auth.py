@@ -4,7 +4,7 @@
 @Author: Youshumin
 @Date: 2019-11-12 12:38:15
 @LastEditors: Youshumin
-@LastEditTime: 2019-11-13 17:51:13
+@LastEditTime: 2019-11-14 10:29:54
 @Description: 
 '''
 import logging
@@ -31,15 +31,15 @@ class AuthLogin(MixinRequestHandler):
             code = form.value_dict["code"]
             codekey = form.value_dict["codekey"]
         else:
-            LOG.error("req_data: %s, req_data: %s", self.request.path,
-                      self.request_body())
+            LOG.warning("req_data: %s, req_data: %s", self.request.path,
+                        self.request_body())
             self.send_error(msg=form.error_dict)
             return
 
         check_code = auth.decode_md_code(codekey)
         if check_code:
             if check_code.lower() != code.lower():
-                LOG.error("check_code: %s, code: %s", check_code, code)
+                LOG.warning("check_code: %s, code: %s", check_code, code)
                 self.send_error(msg="验证码错误")
                 return
         else:
