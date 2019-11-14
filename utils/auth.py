@@ -4,7 +4,7 @@
 @Author: Youshumin
 @Date: 2019-11-12 16:55:25
 @LastEditors: Youshumin
-@LastEditTime: 2019-11-13 17:54:02
+@LastEditTime: 2019-11-14 15:37:07
 @Description: 认证相关...
     md5_password  密码加密
     create_token  创建token
@@ -12,12 +12,12 @@
     auth_middleware  检测是否登陆
     get_captcha_text 生成随机验证码
 '''
-
+import re
 import hashlib
 import logging
 from datetime import datetime, timedelta
 from functools import wraps
-
+from oslo.util import dbObjFormatToJson
 import jwt
 from tornado import gen
 
@@ -28,6 +28,7 @@ LOG = logging.getLogger(__name__)
 JWT_SECRET = "5A@7^bV8WGqKJIM^!h$$*jd7@KAlSw$a"
 JWT_ALGORITHM = "HS256"
 JWT_EXP_DELTA_SECONDS = 60 * 60 * 3
+uuid_re = "^[a-f\d]{8}-[a-f\d]{4}-[a-f\d]{4}-[a-f\d]{4}-[a-f\d]{12}$"
 
 
 def md5_password(nickname, password):
@@ -53,12 +54,22 @@ def decode_token(jwt_token):
 
 
 def create_md_code(info, exp=60 * 5):
+    '''
+    @description:  生成验证码有效期5分钟
+    @param {type} 
+    @return: 
+    '''
     payload = {"info": info, "exp": datetime.utcnow() + timedelta(seconds=exp)}
     md_code = jwt.encode(payload, JWT_SECRET, JWT_ALGORITHM)
     return md_code
 
 
 def decode_md_code(md_code):
+    '''
+    @description: 解析登陆验证码
+    @param {type} 
+    @return: 
+    '''
     try:
         payload = jwt.decode(md_code, JWT_SECRET, algorithms=[JWT_ALGORITHM])
         info = payload.get("info")
@@ -79,12 +90,16 @@ def auth_middleware():
                     payload = decode_token(jwt_token)
                 except (jwt.DecodeError, jwt.ExpiredSignatureError) as e:
                     LOG.error(e)
-                    self.send_fail_json(msg="Token is invalid", code=400)
+                    self.send_fail_json(msg="Token is invalid",
+                                        code=400,
+                                        status=401)
                     return
                 self.user_id = payload["userId"]
             else:
                 self.send_fail_json(
-                    msg="Login timeout please refresh and re-login", code=401)
+                    msg="Login timeout please refresh and re-login",
+                    code=401,
+                    status=401)
                 return
             return func(self, *args, **kwargs)
 
@@ -151,7 +166,32 @@ def PermissionCheck(func):
             interfacedb = crudmixin.Interface().getByIds(
                 userFunctionInterfaceList)
             dict_interface = [dbObjFormatToJson(item) for item in interfacedb]
+
             if not dict_interface:
+                self.send_fail_json(msg="没有权限")
+                return
+
+            LOG.debug("user_perrssion: {}".format(dict_interface))
+
+            request_path = self.request.path
+            end_path = request_path.split("/")[-1]
+            ret = re.match(uuid_re, end_path)
+            if ret:
+                start_path = "/".join(request_path.split("/")[:-1])
+                request_path = "{}/:id".format(start_path)
+                LOG.debug("now request path: {}".format(request_path))
+            req_method = self.request.method
+
+            LOG.debug(req_method)
+
+            flat = False
+            for item in dict_interface:
+                if item["path"] == request_path and item["method"].upper(
+                ) == req_method.upper():
+                    LOG.debug("有权限")
+                    flat = True
+                    break
+            if not flat:
                 self.send_fail_json(msg="没有权限")
                 return
             return func(self, *args, **kwargs)
