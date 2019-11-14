@@ -4,7 +4,7 @@
 @Author: Youshumin
 @Date: 2019-11-12 16:33:41
 @LastEditors: Youshumin
-@LastEditTime: 2019-11-13 16:33:47
+@LastEditTime: 2019-11-14 16:18:16
 @Description: 
 '''
 
@@ -436,7 +436,7 @@ class Interface(MixDbObj):
                     interface.desc = desc
                     interface.path = path
                     self.session.commit()
-                    return True
+                    return True, ""
             else:
                 check_path_method = self.db_obj.filter(
                     self.table.path == path,

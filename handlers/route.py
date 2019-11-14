@@ -4,7 +4,7 @@
 @Author: Youshumin
 @Date: 2019-08-29 16:27:13
 @LastEditors: Youshumin
-@LastEditTime: 2019-11-13 11:00:43
+@LastEditTime: 2019-11-14 16:09:16
 @Description: 
 '''
 
@@ -73,7 +73,7 @@ class RouteHandlers(MixinRequestHandler):
         return
 
 
-@route(r"/rbac/route/{}/".format(uuid_re))
+@route(r"/rbac/route/{}".format(uuid_re))
 class RouteByIDHandlers(MixinRequestHandler):
     @auth_middleware()
     @PermissionCheck

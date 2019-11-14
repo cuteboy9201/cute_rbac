@@ -4,7 +4,7 @@
 @Author: Youshumin
 @Date: 2019-08-30 09:47:44
 @LastEditors: Youshumin
-@LastEditTime: 2019-11-13 16:45:23
+@LastEditTime: 2019-11-14 16:30:11
 @Description: 
 '''
 import json
@@ -57,11 +57,11 @@ class InterfaceHandlers(MixinRequestHandler):
         ret = []
         if code:
             for item in interfaceList:
-                LOG.info(item)
-
                 ret_dict = dbObjFormatToJson(item)
                 ret_dict.setdefault("description", ret_dict["desc"])
                 ret.append(ret_dict)
+            if sortBy and sortBy != "None" and ret:
+                ret = sorted(ret, key=lambda x: x[sortBy], reverse=descending)
             data = dict(totalCount=totalCount, rows=ret)
         else:
             data = dict(totalCount=0, rows=ret)
@@ -82,6 +82,7 @@ class InterfaceHandlers(MixinRequestHandler):
         else:
             form_error(self, form)
         interface = Interface()
+        LOG.debug("修改接口信息: {}".format((name, path, method, desc, id)))
         code, msg = interface.saveInterface(name, path, method, desc, id)
         if code:
             self.send_ok_json(data="")
@@ -171,6 +172,11 @@ class InterfaceRelateHandler(MixinRequestHandler):
     @PermissionCheck
     @coroutine
     def post(self):
+        '''
+        @description:  添加或者删除 接口和角色绑定
+        @param {type} 
+        @return: 
+        '''
         form = relateInterfaceForm(self)
         if form.is_valid():
             action = form.value_dict["action"]

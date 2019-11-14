@@ -4,11 +4,11 @@
 @Author: Youshumin
 @Date: 2019-08-26 10:26:19
 @LastEditors: Youshumin
-@LastEditTime: 2019-11-13 11:05:21
+@LastEditTime: 2019-11-14 17:11:46
 '''
 
 import logging
-
+import json
 from oslo.form.form import form_error
 from oslo.util import dbObjFormatToJson
 from oslo.web.requesthandler import MixinRequestHandler
@@ -16,6 +16,7 @@ from oslo.web.route import route
 from tornado import gen
 
 from dblib import crud as crudmixin
+from forms.role import BatchdelForm
 from forms.user import (RetPassForm, roleDelFrom, userEditRoleUserForm,
                         userPageListForm, userSaveForm)
 from utils.auth import PermissionCheck, auth_middleware, md5_password
@@ -37,7 +38,7 @@ class UserInfoHandler(MixinRequestHandler):
         # @1用户数据对象
         user = crudmixin.User().getById(userId)
         if not user:
-            self.send_fail_json("用户不存在", code=401)
+            self.send_fail_json("用户不存在")
             return
         # 用户角色对象
         user_role = crudmixin.RoleUser().getRoleIds(userId)
@@ -179,9 +180,10 @@ class UserDelHandler(MixinRequestHandler):
             self.send_fail_json(msg=form.error_dict)
             return
         roleuser = crudmixin.RoleUser()
-        roleids = roleuser.getUserIds(id)
+        roleids = roleuser.getRoleIds(id)
         if roleids:
-            self.send_fail_json(msg=u"请先解除用户角色关系", statusCode=403)
+            # deluserrole = "".join(item.name for item in roleids)
+            self.send_fail_json(msg=u"请先解除用户角色关系", code=500)
             return
         user = crudmixin.User()
         code, msg = user.delUserById(id)
@@ -350,3 +352,40 @@ class adminResetPassHandler(MixinRequestHandler):
         else:
             self.send_fail_json("修改失败")
             return
+
+
+@route("/rbac/user/batchdel")
+class RoleBatchDelHandler(MixinRequestHandler):
+    @auth_middleware()
+    @PermissionCheck
+    @gen.coroutine
+    def delete(self):
+        form = BatchdelForm(self)
+        if form.is_valid():
+            ids = form.value_dict["ids"]
+        else:
+            form_error(self, form)
+        if isinstance(ids, str):
+            ids = json.loads(ids)
+        roleuser = crudmixin.RoleUser()
+        user = crudmixin.User()
+        ret = []
+        for id in ids:
+            roleids = roleuser.getRoleIds(id)
+            if roleids:
+                name = user.getById(id).name
+                ret.append(name)
+            else:
+                LOG.info("删除用户: {}".format(id))
+                user.delById(id)
+        # if ret:
+        #     data = ",".join(ret)
+        if ret:
+            data = {"清先删除以下用户角色绑定": ret}
+            code = 500
+            self.send_error(msg=data)
+        else:
+            data = ""
+            code = 200
+            self.send_ok(data=data)
+        return

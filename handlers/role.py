@@ -4,7 +4,7 @@
 @Author: Youshumin
 @Date: 2019-08-29 09:48:41
 @LastEditors: Youshumin
-@LastEditTime: 2019-11-13 16:45:47
+@LastEditTime: 2019-11-14 16:39:13
 @Description: 
 '''
 import json
@@ -139,7 +139,7 @@ class RoleGetByIdHandler(MixinRequestHandler):
         return
 
 
-@route(r"/rbac/role/batchdel")
+@route("/rbac/role/batchdel")
 class RoleBatchDelHandler(MixinRequestHandler):
     @auth_middleware()
     @PermissionCheck
@@ -158,7 +158,7 @@ class RoleBatchDelHandler(MixinRequestHandler):
         return self.send_ok_json(data="")
 
 
-@route("/rbac/role/permissions/{}/".format(uuid_re))
+@route("/rbac/role/permissions/{}".format(uuid_re))
 class RolePermissionGetHandler(MixinRequestHandler):
     @auth_middleware()
     @PermissionCheck
