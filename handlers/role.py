@@ -4,12 +4,11 @@
 @Author: Youshumin
 @Date: 2019-08-29 09:48:41
 @LastEditors: Youshumin
-@LastEditTime: 2019-11-14 16:39:13
+@LastEditTime: 2019-11-14 17:26:05
 @Description: 
 '''
 import json
 import logging
-# from types import UnicodeType
 
 from tornado import gen
 
@@ -152,10 +151,23 @@ class RoleBatchDelHandler(MixinRequestHandler):
             form_error(self, form)
         if isinstance(ids, str):
             ids = json.loads(ids)
+
         role = crudmixin.Role()
+        roleuser = crudmixin.RoleUser()
+        ret = []
         for id in ids:
-            role.delRole(id)
-        return self.send_ok_json(data="")
+            check_role_info = roleuser.getUserIds(id)
+            if check_role_info:
+                name = role.getRoleById(id).name
+                ret.append(name)
+            else:
+                role.delRole(id)
+        if ret:
+            data = {"请先解除角色绑定关系": ret}
+            self.send_error(msg=data)
+        else:
+            self.send_ok_json(data="")
+        return
 
 
 @route("/rbac/role/permissions/{}".format(uuid_re))
