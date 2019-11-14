@@ -103,3 +103,15 @@ class RbacRoleuser(Base):
 
     rbac_role = relationship('RbacRole')
     rbac_user = relationship('RbacUser')
+
+class Test(Base):
+
+    __tablename__ = "test"
+    id = Column(String(64), primary_key=True)
+    name = Column(String(64), nullable=False)
+
+if __name__ == "__main__":
+    from configs.setting import RBAC_NAME
+    from oslo.db.module import mysqlHanlder    
+    engin = mysqlHanlder().get_session(RBAC_NAME)
+    Base.metadata.create_all(engin)

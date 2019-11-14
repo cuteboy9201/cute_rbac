@@ -5,3 +5,4 @@ pymysql==0.9.3
 pyjwt==1.7.1
 pillow==6.2.1
 simplejson==3.16.0
+sentry_sdk==0.13.2

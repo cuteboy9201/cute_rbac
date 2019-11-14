@@ -86,13 +86,20 @@ def auth_middleware():
             jwt_token = self.request.headers.get('authorization', None)
             if jwt_token:
                 try:
-                    jwt_token = jwt_token.split(" ")[-1]
+                    LOG.debug("jwd_token: {}".format(jwt_token))
+                    token_data = jwt_token.split(" ")
+                    jwt_prefix = token_data[0]
+                    jwt_token = token_data[-1]
                     payload = decode_token(jwt_token)
                 except (jwt.DecodeError, jwt.ExpiredSignatureError) as e:
                     LOG.error(e)
                     self.send_fail_json(msg="Token is invalid",
                                         code=400,
                                         status=401)
+                    return
+                LOG.debug("jwt_prefix: {}".format(jwt_prefix))
+                if jwt_prefix != "SuperManager":
+                    self.send_error(msg="Token is invalid", code=401, status=401)
                     return
                 self.user_id = payload["userId"]
             else:
