@@ -76,7 +76,9 @@ class RbacFunctioninterface(Base):
     __tablename__ = 'rbac_functioninterface'
 
     id = Column(String(40), primary_key=True)
-    interfaceId = Column(ForeignKey('rbac_interface.id'), nullable=False, index=True)
+    interfaceId = Column(ForeignKey('rbac_interface.id'),
+                         nullable=False,
+                         index=True)
     menuId = Column(ForeignKey('rbac_menu.id'), nullable=False, index=True)
 
     rbac_interface = relationship('RbacInterface')
@@ -104,14 +106,17 @@ class RbacRoleuser(Base):
     rbac_role = relationship('RbacRole')
     rbac_user = relationship('RbacUser')
 
-class Test(Base):
 
-    __tablename__ = "test"
+class Test(Base):
+    __tablename__ = "test1"
     id = Column(String(64), primary_key=True)
     name = Column(String(64), nullable=False)
 
+
 if __name__ == "__main__":
+    from app import DB
+    DB().rbac_init()
     from configs.setting import RBAC_NAME
-    from oslo.db.module import mysqlHanlder    
-    engin = mysqlHanlder().get_session(RBAC_NAME)
+    from oslo.db.module import mysqlHanlder
+    engin = mysqlHanlder().get_engin(RBAC_NAME)
     Base.metadata.create_all(engin)

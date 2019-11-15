@@ -4,7 +4,7 @@
 @Author: Youshumin
 @Date: 2019-11-12 16:33:41
 @LastEditors: Youshumin
-@LastEditTime: 2019-11-14 16:18:16
+@LastEditTime: 2019-11-15 14:33:50
 @Description: 
 '''
 
@@ -110,7 +110,7 @@ class User(MixDbObj):
             LOG.error("save_user: {}".format(e))
             self.session.rollback()
             return False, ""
-        return True, ""
+        return True, add_user
 
     def isAdmin(self, userId):
         user = self.getById(userId)
