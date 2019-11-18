@@ -114,9 +114,10 @@ class Test(Base):
 
 
 if __name__ == "__main__":
-    from app import DB
-    DB().rbac_init()
+    from data.db_init import init_data
     from configs.setting import RBAC_NAME
     from oslo.db.module import mysqlHanlder
     engin = mysqlHanlder().get_engin(RBAC_NAME)
     Base.metadata.create_all(engin)
+    init_data.init_base()
+    # Base.metadata.drop_all(engin)

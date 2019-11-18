@@ -4,7 +4,7 @@
 @Author: Youshumin
 @Date: 2019-08-30 09:47:44
 @LastEditors: Youshumin
-@LastEditTime: 2019-11-14 16:30:11
+@LastEditTime: 2019-11-18 10:58:20
 @Description: 
 '''
 import json
@@ -40,7 +40,7 @@ class InterfaceHandlers(MixinRequestHandler):
             sortBy = form.value_dict["sortBy"]
             descending = form.value_dict["descending"]
             name = form.value_dict["name"]
-            path = form.value_dict["name"]
+            path = form.value_dict["path"]
             method = form.value_dict["method"]
             functionId = form.value_dict["functionId"]
             rule = {
@@ -62,6 +62,7 @@ class InterfaceHandlers(MixinRequestHandler):
                 ret.append(ret_dict)
             if sortBy and sortBy != "None" and ret:
                 ret = sorted(ret, key=lambda x: x[sortBy], reverse=descending)
+            ret = sorted(ret, key=lambda x: x["isAdd"], reverse=False)
             data = dict(totalCount=totalCount, rows=ret)
         else:
             data = dict(totalCount=0, rows=ret)

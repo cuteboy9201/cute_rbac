@@ -4,7 +4,7 @@
 @Author: Youshumin
 @Date: 2019-11-12 16:33:41
 @LastEditors: Youshumin
-@LastEditTime: 2019-11-15 14:33:50
+@LastEditTime: 2019-11-18 10:53:44
 @Description: 
 '''
 
@@ -95,6 +95,7 @@ class User(MixDbObj):
                         userobj.phone = phone
                     userobj.isLock = False
                     self.session.commit()
+                    return True, userobj
             else:
                 add_user = self.table(name=user,
                                       realName=realName,
@@ -106,11 +107,12 @@ class User(MixDbObj):
                                       create_at=datetime.datetime.now())
                 self.session.add(add_user)
                 self.session.commit()
+                return True, add_user
         except Exception as e:
             LOG.error("save_user: {}".format(e))
             self.session.rollback()
             return False, ""
-        return True, add_user
+        return True, ""
 
     def isAdmin(self, userId):
         user = self.getById(userId)
@@ -426,7 +428,7 @@ class Interface(MixDbObj):
         interface = self.db_obj.filter(self.table.id.in_(ids)).all()
         return interface
 
-    def saveInterface(self, name, path, method, desc, id):
+    def saveInterface(self, name, path, method, desc, id=""):
         try:
             if id:
                 interface = self.getById(id)
@@ -450,7 +452,7 @@ class Interface(MixDbObj):
                                            id=create_id())
                 self.session.add(add_interface)
                 self.session.commit()
-                return True, ""
+                return True, add_interface
         except Exception as e:
             LOG.error("save_interface: {}".format(e))
             self.session.rollback()
@@ -464,6 +466,7 @@ class Interface(MixDbObj):
             interfaceObj = interfaceObj.filter(
                 self.table.name.like("%{}%".format(rule["name"])))
         if rule.get("path"):
+            LOG.debug("path: {}".format(rule.get("path")))
             interfaceObj = interfaceObj.filter(
                 self.table.path.like("%{}%".format(rule["path"])))
         if rule.get("method"):
