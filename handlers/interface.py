@@ -4,7 +4,7 @@
 @Author: Youshumin
 @Date: 2019-08-30 09:47:44
 @LastEditors: Youshumin
-@LastEditTime: 2019-11-18 10:58:20
+@LastEditTime: 2019-11-18 16:00:32
 @Description: 
 '''
 import json
@@ -62,7 +62,8 @@ class InterfaceHandlers(MixinRequestHandler):
                 ret.append(ret_dict)
             if sortBy and sortBy != "None" and ret:
                 ret = sorted(ret, key=lambda x: x[sortBy], reverse=descending)
-            ret = sorted(ret, key=lambda x: x["isAdd"], reverse=False)
+            if functionId:
+                ret = sorted(ret, key=lambda x: x["isAdd"], reverse=False)
             data = dict(totalCount=totalCount, rows=ret)
         else:
             data = dict(totalCount=0, rows=ret)
