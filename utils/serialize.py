@@ -4,7 +4,7 @@
 @Author: Youshumin
 @Date: 2019-11-13 10:20:38
 @LastEditors: Youshumin
-@LastEditTime: 2019-11-13 10:58:51
+@LastEditTime: 2019-11-19 11:12:22
 @Description: 
 '''
 
@@ -27,23 +27,32 @@ def buildchildren(parentobj, allobj):
 
 
 def formatMenus(menus):
-
     def f(kv, children):
         kv.setdefault("children", [])
         for child in children:
-            kvChile = dict(title=child.title, path=child.path, icon=child.icon,
-                           id=child.id, sort=child.sort, type=child.type, permssion=child.permission)
+            kvChile = dict(title=child.title,
+                           path=child.path,
+                           icon=child.icon,
+                           id=child.id,
+                           sort=child.sort,
+                           type=child.type,
+                           permssion=child.permission)
             if child.children and len(child.children) > 0:
                 f(kvChile, child.children)
             kv["children"].append(kvChile)
 
     accessMenuList = []
     for menu in menus:
-        kv = dict(title=menu.title, path=menu.path, icon=menu.icon,
-                  id=menu.id, sort=menu.sort, type=menu.type, permssion=menu.permission)
-    if menu.children and len(menu.children) > 0:
-        f(kv, menu.children)
-    accessMenuList.append(kv)
+        kv = dict(title=menu.title,
+                  path=menu.path,
+                  icon=menu.icon,
+                  id=menu.id,
+                  sort=menu.sort,
+                  type=menu.type,
+                  permssion=menu.permission)
+        if menu.children and len(menu.children) > 0:
+            f(kv, menu.children)
+        accessMenuList.append(kv)
     return accessMenuList
 
 
