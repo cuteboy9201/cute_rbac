@@ -107,12 +107,6 @@ class RbacRoleuser(Base):
     rbac_user = relationship('RbacUser')
 
 
-class Test(Base):
-    __tablename__ = "test1"
-    id = Column(String(64), primary_key=True)
-    name = Column(String(64), nullable=False)
-
-
 if __name__ == "__main__":
     from data.db_init import init_data
     from configs.setting import RBAC_NAME
@@ -124,7 +118,7 @@ if __name__ == "__main__":
     num = len(sys.argv)
     if num != 2:
         sys.exit(1)
-    if sys.argv[1] == "cretae":
+    if sys.argv[1] == "create":
         Base.metadata.create_all(engin)
         init_data.init_base()
     elif sys.argv[1] == "drop":

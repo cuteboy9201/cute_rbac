@@ -3,7 +3,7 @@
 # @Author: Youshumin
 # @Date: 2019-11-15 12:01:01
  # @LastEditors: Please set LastEditors
- # @LastEditTime: 2019-11-25 16:22:06
+ # @LastEditTime: 2019-11-25 16:26:46
 # @Description: 
 ###
 
@@ -32,6 +32,9 @@ case "$1" in
         ;;
     dbinit)
         rbac_db_init
+        ;;
+    dbdel)
+        rbac_db_del
         ;;
     *)
         echo "start, dbinit"
