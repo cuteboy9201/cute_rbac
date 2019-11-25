@@ -29,6 +29,7 @@ LOG = logging.getLogger(__name__)
 
 @route("/rbac/user/info")
 class UserInfoHandler(MixinRequestHandler):
+
     @auth_middleware()
     def get(self):
 
@@ -54,7 +55,6 @@ class UserInfoHandler(MixinRequestHandler):
                 "userPermissions": [],
                 "accessMenus": [],
                 "accessRoutes": [],
-                "accessInterfaces": None,
                 "isAdmin": isAdmin,
                 "accessInterfaces": []
             }
@@ -133,6 +133,7 @@ class UserInfoHandler(MixinRequestHandler):
 
 @route("/rbac/user/save")
 class UserSaveHandler(MixinRequestHandler):
+
     @auth_middleware()
     @PermissionCheck
     @gen.coroutine
@@ -167,6 +168,7 @@ class UserSaveHandler(MixinRequestHandler):
 
 @route("/rbac/user/del")
 class UserDelHandler(MixinRequestHandler):
+
     @auth_middleware()
     @PermissionCheck
     @gen.coroutine
@@ -195,6 +197,7 @@ class UserDelHandler(MixinRequestHandler):
 
 @route("/rbac/user/pagedlist")
 class UserPagesListHandler(MixinRequestHandler):
+
     @auth_middleware()
     @PermissionCheck
     @gen.coroutine
@@ -208,7 +211,6 @@ class UserPagesListHandler(MixinRequestHandler):
             descending = form.value_dict["descending"]
             rules = form.value_dict["filter"]
             if rules:
-                import json
                 rules = json.loads(rules)
             else:
                 rules = {}
@@ -227,6 +229,7 @@ class UserPagesListHandler(MixinRequestHandler):
 
 @route("/rbac/user/editrole/")
 class EdidUserRoleInfoHandler(MixinRequestHandler):
+
     @auth_middleware()
     @PermissionCheck
     @gen.coroutine
@@ -254,6 +257,7 @@ class EdidUserRoleInfoHandler(MixinRequestHandler):
     "/rbac/user/(?P<uid>[a-f\d]{8}-[a-f\d]{4}-[a-f\d]{4}-[a-f\d]{4}-[a-f\d]{12})"
 )
 class userGetHandler(MixinRequestHandler):
+
     @auth_middleware()
     @PermissionCheck
     @gen.coroutine
@@ -323,8 +327,8 @@ class userChangePassHandler(MixinRequestHandler):
 class adminResetPassHandler(MixinRequestHandler):
     '''
     @description:  管理员修改用户密码
-    @param {type} 
-    @return: 
+    @param {type}
+    @return:
     '''
     @auth_middleware()
     @PermissionCheck
@@ -356,6 +360,7 @@ class adminResetPassHandler(MixinRequestHandler):
 
 @route("/rbac/user/batchdel")
 class RoleBatchDelHandler(MixinRequestHandler):
+
     @auth_middleware()
     @PermissionCheck
     @gen.coroutine
@@ -382,10 +387,8 @@ class RoleBatchDelHandler(MixinRequestHandler):
         #     data = ",".join(ret)
         if ret:
             data = {"清先删除以下用户角色绑定": ret}
-            code = 500
             self.send_error(msg=data)
         else:
             data = ""
-            code = 200
             self.send_ok(data=data)
         return

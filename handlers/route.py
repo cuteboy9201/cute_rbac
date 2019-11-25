@@ -5,7 +5,7 @@
 @Date: 2019-08-29 16:27:13
 @LastEditors: Youshumin
 @LastEditTime: 2019-11-14 16:09:16
-@Description: 
+@Description:
 '''
 
 import logging
@@ -28,6 +28,7 @@ uuid_re = "(?P<id>[a-f\d]{8}-[a-f\d]{4}-[a-f\d]{4}-[a-f\d]{4}-[a-f\d]{12})"
 
 @route("/rbac/route/")
 class RouteHandlers(MixinRequestHandler):
+
     @auth_middleware()
     @PermissionCheck
     @coroutine
@@ -75,6 +76,7 @@ class RouteHandlers(MixinRequestHandler):
 
 @route(r"/rbac/route/{}".format(uuid_re))
 class RouteByIDHandlers(MixinRequestHandler):
+
     @auth_middleware()
     @PermissionCheck
     @coroutine

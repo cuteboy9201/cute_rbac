@@ -5,7 +5,7 @@
 @Date: 2019-11-12 12:38:15
 @LastEditors: Youshumin
 @LastEditTime: 2019-11-14 10:29:54
-@Description: 
+@Description:
 '''
 import logging
 
@@ -15,13 +15,14 @@ from tornado.gen import coroutine
 
 from forms.auth import AuthLoginForm
 from utils import auth
-from utils.code import Captcha, get_captcha
+from utils.code import Captcha
 from dblib.crud import User
 LOG = logging.getLogger(__name__)
 
 
 @route("/rbac/auth/login")
 class AuthLogin(MixinRequestHandler):
+
     @coroutine
     def post(self):
         form = AuthLoginForm(self)
@@ -63,6 +64,7 @@ class AuthLogin(MixinRequestHandler):
 
 @route("/rbac/image/(?P<code>.*)/")
 class ImageHandler(MixinRequestHandler):
+
     @coroutine
     def get(self, code):
         code = auth.decode_md_code(code)
@@ -79,6 +81,7 @@ class ImageHandler(MixinRequestHandler):
 
 @route("/rbac/captcha/refresh")
 class CaptchaHandler(MixinRequestHandler):
+
     def get(self):
         code = auth.get_captcha_text()
         md_code = auth.create_md_code(code).decode()

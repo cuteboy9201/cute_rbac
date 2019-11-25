@@ -2,8 +2,8 @@
 ### 
 # @Author: Youshumin
 # @Date: 2019-11-15 12:01:01
- # @LastEditors: Youshumin
- # @LastEditTime: 2019-11-15 12:13:23
+ # @LastEditors: Please set LastEditors
+ # @LastEditTime: 2019-11-25 16:22:06
 # @Description: 
 ###
 
@@ -19,10 +19,13 @@ start_main(){
 
 rbac_db_init(){
     cd ${workdir}/data/db_init
-    ${pyenv} module.py
-    ${pyenv} init_data.py
+    ${pyenv} module.py create
 }
 
+rbac_db_del(){
+    cd ${workdir}/data/db_init
+    ${pyenv} module.py drop 
+}
 case "$1" in 
     start)
         start_main

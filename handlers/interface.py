@@ -5,11 +5,10 @@
 @Date: 2019-08-30 09:47:44
 @LastEditors: Youshumin
 @LastEditTime: 2019-11-18 16:00:32
-@Description: 
+@Description:
 '''
 import json
 import logging
-# from types import UnicodeType
 
 from oslo.form.form import form_error
 from oslo.util import dbObjFormatToJson
@@ -29,6 +28,7 @@ uuid_re = "(?P<id>[a-f\d]{8}-[a-f\d]{4}-[a-f\d]{4}-[a-f\d]{4}-[a-f\d]{12})"
 
 @route('/rbac/interface/')
 class InterfaceHandlers(MixinRequestHandler):
+
     @auth_middleware()
     @PermissionCheck
     @coroutine
@@ -133,6 +133,7 @@ class InterfaceHandlers(MixinRequestHandler):
 
 @route("/rbac/interface/{}/".format(uuid_re))
 class InterfaceByIDHandlers(MixinRequestHandler):
+
     @auth_middleware()
     @PermissionCheck
     @coroutine
@@ -170,14 +171,15 @@ class InterfaceByIDHandlers(MixinRequestHandler):
 
 @route("/rbac/interface/relate/")
 class InterfaceRelateHandler(MixinRequestHandler):
+
     @auth_middleware()
     @PermissionCheck
     @coroutine
     def post(self):
         '''
         @description:  添加或者删除 接口和角色绑定
-        @param {type} 
-        @return: 
+        @param {type}
+        @return:
         '''
         form = relateInterfaceForm(self)
         if form.is_valid():

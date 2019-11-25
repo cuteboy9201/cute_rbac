@@ -12,8 +12,6 @@ import sys
 
 import tornado.options
 from tornado.options import define, options
-# reload(sys)
-# sys.setdefaultencoding('utf8')
 import sentry_sdk
 from sentry_sdk.integrations.tornado import TornadoIntegration
 
@@ -23,6 +21,7 @@ sentry_sdk.init(
 
 
 class AppMain:
+
     def __init__(self):
         PATH_APP_ROOT = os.path.abspath(
             os.path.join(os.path.abspath(os.path.dirname(__file__))))

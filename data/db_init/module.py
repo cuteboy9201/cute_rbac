@@ -118,6 +118,16 @@ if __name__ == "__main__":
     from configs.setting import RBAC_NAME
     from oslo.db.module import mysqlHanlder
     engin = mysqlHanlder().get_engin(RBAC_NAME)
-    Base.metadata.create_all(engin)
-    init_data.init_base()
-    # Base.metadata.drop_all(engin)
+
+    import sys
+
+    num = len(sys.argv)
+    if num != 2:
+        sys.exit(1)
+    if sys.argv[1] == "cretae":
+        Base.metadata.create_all(engin)
+        init_data.init_base()
+    elif sys.argv[1] == "drop":
+        Base.metadata.drop_all(engin)
+
+    
