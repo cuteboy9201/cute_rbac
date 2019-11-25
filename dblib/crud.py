@@ -3,8 +3,8 @@
 '''
 @Author: Youshumin
 @Date: 2019-11-12 16:33:41
-@LastEditors: Youshumin
-@LastEditTime: 2019-11-18 10:53:44
+@LastEditors: Please set LastEditors
+@LastEditTime: 2019-11-25 17:54:49
 @Description: 
 '''
 
@@ -271,7 +271,7 @@ class Menu(object):
 
     def getParentMenu(self):
         menu = self.db_obj.filter(self.table.parentId == "0",
-                                  self.table.isLock == False).all()
+                                  self.table.isLock == False).order_by(asc(self.table.sort)).all()
         return menu
 
     def getMenuListByIds(self, ids):
