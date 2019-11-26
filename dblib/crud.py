@@ -4,7 +4,7 @@
 @Author: Youshumin
 @Date: 2019-11-12 16:33:41
 @LastEditors: Please set LastEditors
-@LastEditTime: 2019-11-25 17:54:49
+@LastEditTime: 2019-11-26 10:04:13
 @Description: 
 '''
 
@@ -360,7 +360,7 @@ class Route(MixDbObj):
         return routeList
 
     def getRoute(self):
-        route = self.db_obj.order_by(desc(self.table.sort)).all()
+        route = self.db_obj.order_by(asc(self.table.sort)).all()
         return route
 
     def getParentRoute(self):
