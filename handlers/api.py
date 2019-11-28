@@ -42,8 +42,8 @@ class checkPermissionHandler(MixinRequestHandler):
         if not self.user_id:
             self.send_fail(msg="没有权限")
             return
-        check_permission = api_check_permission(self, check_path,check_method)
-        
+        check_permission = api_check_permission(self, check_path, check_method)
+
         if check_permission:
             self.send_ok(data="")
             return

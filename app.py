@@ -45,7 +45,6 @@ class LogHandler(object):
 
 
 p_version = sys.version_info.major
-
 if p_version == 2:
     LogHandler()
 

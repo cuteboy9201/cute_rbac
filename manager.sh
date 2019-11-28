@@ -10,7 +10,7 @@
 workdir=$(cd $(dirname $0); pwd) 
 export PYTHONPATH=$PYTHONPATH:${workdir} 
 
-pyenv="/data/code/rbac/.env/bin/python3.7"
+pyenv="${workdir}/.env/bin/python"
 
 start_main(){
     cd $workdir
