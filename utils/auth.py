@@ -4,7 +4,7 @@
 @Author: Youshumin
 @Date: 2019-11-12 16:55:25
 @LastEditors: Please set LastEditors
-@LastEditTime: 2019-11-28 10:30:36
+@LastEditTime: 2019-11-28 17:30:37
 @Description: 认证相关...
     md5_password  密码加密
     create_token  创建token
@@ -93,7 +93,7 @@ def get_user_info_bytoken(auth):
         return True,payload
     return False, "TOKEN IS INVALID!!!"
 
-def api_check_permission(self,check_path):
+def api_check_permission(self,check_path, check_method):
     user = crudmixin.User()
     isAdmin = user.isAdmin(self.user_id)
     if isAdmin:
@@ -140,7 +140,8 @@ def api_check_permission(self,check_path):
             start_path = "/".join(request_path.split("/")[:-1])
             request_path = "{}/:id".format(start_path)
             LOG.debug("now request path: {}".format(request_path))
-        req_method = self.request.method
+        # req_method = self.request.method
+        req_method = check_method
 
         flat = False
         for item in dict_interface:
@@ -283,7 +284,7 @@ def PermissionCheck(func):
         #     if not flat:
         #         self.send_fail_json(msg="没有权限")
         #         return
-        check_permission = api_check_permission(self,self.request.path)
+        check_permission = api_check_permission(self,self.request.path,self.request.method)
         if not check_permission:
             self.send_fail(msg="没有权限")
             return 
