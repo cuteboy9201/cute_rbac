@@ -3,8 +3,8 @@
 '''
 @Author: Youshumin
 @Date: 2019-08-26 10:26:19
-@LastEditors: Youshumin
-@LastEditTime: 2019-11-14 17:11:46
+@LastEditors: Please set LastEditors
+@LastEditTime: 2019-11-28 10:03:45
 '''
 
 import logging
@@ -338,7 +338,7 @@ class adminResetPassHandler(MixinRequestHandler):
         req_data = self.from_data()
         userId = req_data.get("name", "")
         if not userId:
-            self.send_error(msg="参数有误")
+            self.send_fail(msg="参数有误")
         newpassword = req_data.get("newpassword")
         repassword = req_data.get("repassword")
         if repassword != newpassword:
@@ -387,7 +387,7 @@ class RoleBatchDelHandler(MixinRequestHandler):
         #     data = ",".join(ret)
         if ret:
             data = {"清先删除以下用户角色绑定": ret}
-            self.send_error(msg=data)
+            self.send_fail(msg=data)
         else:
             data = ""
             self.send_ok(data=data)

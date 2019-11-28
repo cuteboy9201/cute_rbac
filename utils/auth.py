@@ -3,8 +3,8 @@
 '''
 @Author: Youshumin
 @Date: 2019-11-12 16:55:25
-@LastEditors: Youshumin
-@LastEditTime: 2019-11-19 10:05:40
+@LastEditors: Please set LastEditors
+@LastEditTime: 2019-11-28 10:03:56
 @Description: 认证相关...
     md5_password  密码加密
     create_token  创建token
@@ -99,7 +99,7 @@ def auth_middleware():
                     return
                 LOG.debug("jwt_prefix: {}".format(jwt_prefix))
                 if jwt_prefix != "SuperManager":
-                    self.send_error(msg="Token is invalid",
+                    self.send_fail(msg="Token is invalid",
                                     code=401,
                                     status=401)
                     return
@@ -134,10 +134,10 @@ def PermissionCheck(func):
     def wrapper(self, *args, **kwargs):
         try:
             if not self.user_id:
-                self.send_error(msg="没有权限,请联系管理员")
+                self.send_fail(msg="没有权限,请联系管理员")
                 return
         except:
-            self.send_error(msg="没有权限,请联系管理员")
+            self.send_fail(msg="没有权限,请联系管理员")
             return
 
         user = crudmixin.User()

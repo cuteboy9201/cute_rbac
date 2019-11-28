@@ -34,17 +34,17 @@ class AuthLogin(MixinRequestHandler):
         else:
             LOG.warning("req_data: %s, req_data: %s", self.request.path,
                         self.request_body())
-            self.send_error(msg=form.error_dict)
+            self.send_fail(msg=form.error_dict)
             return
 
         check_code = auth.decode_md_code(codekey)
         if check_code:
             if check_code.lower() != code.lower():
                 LOG.warning("check_code: %s, code: %s", check_code, code)
-                self.send_error(msg="验证码错误")
+                self.send_fail(msg="验证码错误")
                 return
         else:
-            self.send_error(msg="验证码已过期, 请重新输入验证码")
+            self.send_fail(msg="验证码已过期, 请重新输入验证码")
             return
         password = auth.md5_password(username, password)
         user = User().getUserByNameAndPwd(username, password)
@@ -58,7 +58,7 @@ class AuthLogin(MixinRequestHandler):
             self.send_ok(data=data)
             return
         else:
-            self.send_error(msg="账号或者密码错误")
+            self.send_fail(msg="账号或者密码错误")
             return
 
 
@@ -76,7 +76,7 @@ class ImageHandler(MixinRequestHandler):
             buf.close()
             return
         else:
-            return self.send_error(msg="验证码已经过期")
+            return self.send_fail(msg="验证码已经过期")
 
 
 @route("/rbac/captcha/refresh")

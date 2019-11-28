@@ -164,7 +164,7 @@ class RoleBatchDelHandler(MixinRequestHandler):
                 role.delRole(id)
         if ret:
             data = {"请先解除角色绑定关系": ret}
-            self.send_error(msg=data)
+            self.send_fail(msg=data)
         else:
             self.send_ok_json(data="")
         return
