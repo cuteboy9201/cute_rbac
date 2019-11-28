@@ -1,0 +1,21 @@
+{
+	"folders":
+	[
+		{
+			"path": "/Users/youshumin/Desktop/cuteboy9201/rbac/"
+		}
+	],
+	 "settings":
+  	{  "python_interpreter": "/Users/youshumin/Desktop/cuteboy9201/rbac/.env/bin/python3.7",
+    	"LSP":
+    	{
+      	"pyls":
+      	{
+        	"env":
+        	{
+          	"PYTHONPATH": "/Users/youshumin/Desktop/cuteboy9201/rbac/.env/lib/python3.7/site-packages"
+        	}
+      	}
+    	}
+  	}
+}

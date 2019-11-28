@@ -6,19 +6,19 @@
 @Description: In User Settings Edit
 @FilePath: /rbac/handlers/api.py
 '''
-import json 
-import logging 
+import json
+import logging
 
 from oslo.web.requesthandler import MixinRequestHandler
-from oslo.web.route import route 
+from oslo.web.route import route
 from tornado.gen import coroutine
-from utils.auth import get_user_info_bytoken,api_check_permission
+from utils.auth import get_user_info_bytoken, api_check_permission
 
 LOG = logging.getLogger(__name__)
 
+
 @route("/rbac/check_permission")
 class checkPermissionHandler(MixinRequestHandler):
-
     @coroutine
     def post(self):
         req_data = self.request_body()
@@ -31,13 +31,13 @@ class checkPermissionHandler(MixinRequestHandler):
         self.user_id = auth_info["userId"]
         if not self.user_id:
             self.send_fail(msg="没有权限")
-            return 
+            return
         check_permission = api_check_permission(self, check_path)
         if check_permission:
             self.send_ok(data="")
             return
         self.send_fail(msg="没有权限")
-        return 
+        return
 
     @coroutine
     def get(self):
@@ -51,10 +51,10 @@ class checkPermissionHandler(MixinRequestHandler):
         self.user_id = auth_info["userId"]
         if not self.user_id:
             self.send_fail(msg="没有权限")
-            return 
+            return
         check_permission = api_check_permission(self, check_path)
         if check_permission:
             self.send_ok(data="")
             return
         self.send_fail(msg="没有权限")
-        return 
+        return

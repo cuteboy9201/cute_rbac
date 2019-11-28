@@ -25,12 +25,11 @@ debug = os.environ.get("RUN_ENV")
 
 LOG = logging.getLogger(__name__)
 
-class LogHandler(object):
 
+class LogHandler(object):
     """设置tornado 日志信息 当设置RUN_ENV为prod的时候进行文件输出,否则控制台
        python3 会有问题... 不是大问题, 不在细化研究...使用supervisor管理python
     """
-
     def __init__(self):
         if debug == "prod":
             define("log_file_prefix", default=LOGFILE)
@@ -44,8 +43,10 @@ class LogHandler(object):
             define("log_to_stderr", default=False)
         super(LogHandler, self).__init__()
 
+
 p_version = sys.version_info.major
-if p_version ==2:
+
+if p_version == 2:
     LogHandler()
 
 
@@ -53,7 +54,7 @@ class RouteHandler(object):
     """注册路由"""
     def __init__(self):
         """
-        需要配置这里实现注册路由... 
+        需要配置这里实现注册路由...
             自动注册路由的方式可以继承 application实现
             我这边是想实现像flask蓝本一样实现注册...所以暂时设置为这样
         """
@@ -65,7 +66,7 @@ class RouteHandler(object):
         from handlers import role
         from handlers import route
         from handlers import api
-        
+
         from oslo.web.route import route
         self.route = route
         super(RouteHandler, self).__init__()
@@ -74,6 +75,7 @@ class RouteHandler(object):
 class DB(object):
     """初始化数据库"""
     def __init__(self):
+
         self.db = mysqlHanlder()
 
     def rbac_init(self):

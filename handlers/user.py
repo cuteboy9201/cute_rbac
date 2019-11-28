@@ -280,8 +280,8 @@ class userGetHandler(MixinRequestHandler):
 class userChangePassHandler(MixinRequestHandler):
     '''
     @description:  用户自行修改密码
-    @param {type} 
-    @return: 
+    @param {type}
+    @return:
     '''
     @auth_middleware()
     # @PermissionCheck
@@ -317,7 +317,7 @@ class userChangePassHandler(MixinRequestHandler):
         try:
             userDB.password = save_password
             user.session.commit()
-        except:
+        except Exception:
             pass
         self.send_ok_json(data="修改成功")
         return

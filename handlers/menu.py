@@ -5,7 +5,7 @@
 @Date: 2019-08-29 14:22:20
 @LastEditors: Youshumin
 @LastEditTime: 2019-11-13 10:32:31
-@Description: 
+@Description:
 '''
 
 import logging
@@ -32,8 +32,8 @@ class MenuHandlers(MixinRequestHandler):
     def get(self):
         '''
         @description:  获取全部菜单信息
-        @param {type} 
-        @return: 
+        @param {type}
+        @return:
         '''
         menu = Menu()
         menuList = menu.getMenuAllList()

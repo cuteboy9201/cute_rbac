@@ -10,8 +10,8 @@
 import os
 import sys
 
-import tornado.options
-from tornado.options import define, options
+from tornado import options
+
 import sentry_sdk
 from sentry_sdk.integrations.tornado import TornadoIntegration
 
@@ -27,7 +27,7 @@ class AppMain:
             os.path.join(os.path.abspath(os.path.dirname(__file__))))
         if PATH_APP_ROOT not in sys.path:
             sys.path.insert(0, PATH_APP_ROOT)
-        define("APP_PATH", default=PATH_APP_ROOT, help="app run dir")
+        options.define("APP_PATH", default=PATH_APP_ROOT, help="app run dir")
         from app import web_app
         self._web_app = web_app()
 

@@ -5,9 +5,11 @@
 @Date: 2019-11-13 09:52:42
 @LastEditors: Youshumin
 @LastEditTime: 2019-11-13 10:31:51
-@Description: 
+@Description:
 '''
-from oslo.form.fields import BoolField, EmailField, IntegerField, StringField, StringListField
+from oslo.form.fields import (BoolField, IntegerField,
+                              StringField, StringListField)
+
 from oslo.form.form import Form
 
 

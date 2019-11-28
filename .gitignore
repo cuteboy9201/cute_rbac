@@ -7,3 +7,5 @@ __pycache__
 settings.json
 .pytest_cache
 .env
+.mypy_cache
+untitled.sublime-workspace
