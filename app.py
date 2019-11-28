@@ -3,8 +3,8 @@
 '''
 @Author: Youshumin
 @Date: 2019-08-21 11:13:46
-@LastEditors: Youshumin
-@LastEditTime: 2019-11-13 17:57:37
+@LastEditors: Please set LastEditors
+@LastEditTime: 2019-11-28 10:34:37
 '''
 import logging
 import logging.config
@@ -64,7 +64,8 @@ class RouteHandler(object):
         from handlers import user
         from handlers import role
         from handlers import route
-
+        from handlers import api
+        
         from oslo.web.route import route
         self.route = route
         super(RouteHandler, self).__init__()

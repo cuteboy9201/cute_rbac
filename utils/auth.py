@@ -4,7 +4,7 @@
 @Author: Youshumin
 @Date: 2019-11-12 16:55:25
 @LastEditors: Please set LastEditors
-@LastEditTime: 2019-11-28 10:03:56
+@LastEditTime: 2019-11-28 10:30:36
 @Description: 认证相关...
     md5_password  密码加密
     create_token  创建token
@@ -77,6 +77,82 @@ def decode_md_code(md_code):
         info = False
     return info
 
+def get_user_info_bytoken(auth):
+    LOG.debug("请求的认证信息为:{}".format(auth))
+    try:
+        token_data = auth.split(" ") 
+        jwt_prefix = token_data[0] # 头部组合
+        jwt_token = token_data[1]  # 真实token信息
+        payload = decode_token(jwt_token)
+    except (jwt.DecodeError, jwt.ExpiredSignatureError) as e:
+        LOG.error(str(e))
+        return False, "TOKEN IS INVALID!!!"
+    if jwt_prefix != "SuperManager":
+        return False, "TOKEN IS INVALID!!!"
+    if payload["userId"]:
+        return True,payload
+    return False, "TOKEN IS INVALID!!!"
+
+def api_check_permission(self,check_path):
+    user = crudmixin.User()
+    isAdmin = user.isAdmin(self.user_id)
+    if isAdmin:
+        return True
+    else:
+        roleuser = crudmixin.RoleUser()
+        roles = roleuser.getRoleIds(self.user_id)
+        role_list = [item.roleId for item in roles]
+        if not role_list:
+            return False
+
+        # 角色权限对象
+        role_function = crudmixin.RoleFunction().getRoleFunctionByRoleIds(
+            role_list)
+        # 用户权限ID列表
+        functions = [item.menuId for item in role_function]
+        # 用户权限对象
+        menu = crudmixin.Menu().getMenuListByIds(functions)
+        # @3用户权限列表
+        user_permission = [item.permission for item in menu]
+        if not user_permission:
+            return True
+
+        # 用户接口访问权限
+        userFunctionInterface = crudmixin.FunctionInterface(
+        ).getFunctionInterfaceByFunctions(functions)
+        userFunctionInterfaceList = [
+            item.interfaceId for item in userFunctionInterface
+        ]
+        interfacedb = crudmixin.Interface().getByIds(
+            userFunctionInterfaceList)
+        dict_interface = [dbObjFormatToJson(item) for item in interfacedb]
+
+        if not dict_interface:
+            return False
+
+        LOG.debug("user_perrssion: {}".format(dict_interface))
+
+        # request_path = self.request.path
+        request_path = check_path
+        end_path = request_path.split("/")[-1]
+        ret = re.match(uuid_re, end_path)
+        if ret:
+            start_path = "/".join(request_path.split("/")[:-1])
+            request_path = "{}/:id".format(start_path)
+            LOG.debug("now request path: {}".format(request_path))
+        req_method = self.request.method
+
+        flat = False
+        for item in dict_interface:
+            if item["path"] == request_path and item["method"].upper(
+            ) == req_method.upper():
+                flat = True
+                break
+        if flat:
+            return True
+        return False
+
+
 
 def auth_middleware():
     def login_required(func):
@@ -85,25 +161,29 @@ def auth_middleware():
         def wrapper(self, *args, **kwargs):
             jwt_token = self.request.headers.get('authorization', None)
             if jwt_token:
-                try:
-                    LOG.debug("jwd_token: {}".format(jwt_token))
-                    token_data = jwt_token.split(" ")
-                    jwt_prefix = token_data[0]
-                    jwt_token = token_data[-1]
-                    payload = decode_token(jwt_token)
-                except (jwt.DecodeError, jwt.ExpiredSignatureError) as e:
-                    LOG.error(e)
-                    self.send_fail_json(msg="Token is invalid",
-                                        code=400,
-                                        status=401)
+                # try:
+                #     LOG.debug("jwd_token: {}".format(jwt_token))
+                #     token_data = jwt_token.split(" ")
+                #     jwt_prefix = token_data[0]
+                #     jwt_token = token_data[-1]
+                #     payload = decode_token(jwt_token)
+                # except (jwt.DecodeError, jwt.ExpiredSignatureError) as e:
+                #     LOG.error(e)
+                #     self.send_fail_json(msg="Token is invalid",
+                #                         code=400,
+                #                         status=401)
+                #     return
+                # LOG.debug("jwt_prefix: {}".format(jwt_prefix))
+                # if jwt_prefix != "SuperManager":
+                #     self.send_fail(msg="Token is invalid",
+                #                     code=401,
+                #                     status=401)
+                #     return
+                code, msg = get_user_info_bytoken(jwt_token)
+                if not code:
+                    self.send_fail(msg=msg, code=400, status=400)
                     return
-                LOG.debug("jwt_prefix: {}".format(jwt_prefix))
-                if jwt_prefix != "SuperManager":
-                    self.send_fail(msg="Token is invalid",
-                                    code=401,
-                                    status=401)
-                    return
-                self.user_id = payload["userId"]
+                self.user_id = msg["userId"]
             else:
                 self.send_fail_json(
                     msg="Login timeout please refresh and re-login",
@@ -140,69 +220,72 @@ def PermissionCheck(func):
             self.send_fail(msg="没有权限,请联系管理员")
             return
 
-        user = crudmixin.User()
-        isAdmin = user.isAdmin(self.user_id)
-        if isAdmin:
+        # user = crudmixin.User()
+        # isAdmin = user.isAdmin(self.user_id)
+        # if isAdmin:
 
-            return (func(self, *args, **kwargs))
-        else:
-            roleuser = crudmixin.RoleUser()
-            roles = roleuser.getRoleIds(self.user_id)
-            role_list = [item.roleId for item in roles]
-            if not role_list:
-                self.send_fail_json(msg="没有权限")
-                return
+        #     return (func(self, *args, **kwargs))
+        # else:
+        #     roleuser = crudmixin.RoleUser()
+        #     roles = roleuser.getRoleIds(self.user_id)
+        #     role_list = [item.roleId for item in roles]
+        #     if not role_list:
+        #         self.send_fail_json(msg="没有权限")
+        #         return
 
-            # 角色权限对象
-            role_function = crudmixin.RoleFunction().getRoleFunctionByRoleIds(
-                role_list)
-            # 用户权限ID列表
-            functions = [item.menuId for item in role_function]
-            # 用户权限对象
-            menu = crudmixin.Menu().getMenuListByIds(functions)
-            # @3用户权限列表
-            user_permission = [item.permission for item in menu]
-            if not user_permission:
-                self.send_fail_json(msg="没有权限")
-                return
+        #     # 角色权限对象
+        #     role_function = crudmixin.RoleFunction().getRoleFunctionByRoleIds(
+        #         role_list)
+        #     # 用户权限ID列表
+        #     functions = [item.menuId for item in role_function]
+        #     # 用户权限对象
+        #     menu = crudmixin.Menu().getMenuListByIds(functions)
+        #     # @3用户权限列表
+        #     user_permission = [item.permission for item in menu]
+        #     if not user_permission:
+        #         self.send_fail_json(msg="没有权限")
+        #         return
 
-            # 用户接口访问权限
-            userFunctionInterface = crudmixin.FunctionInterface(
-            ).getFunctionInterfaceByFunctions(functions)
-            userFunctionInterfaceList = [
-                item.interfaceId for item in userFunctionInterface
-            ]
-            interfacedb = crudmixin.Interface().getByIds(
-                userFunctionInterfaceList)
-            dict_interface = [dbObjFormatToJson(item) for item in interfacedb]
+        #     # 用户接口访问权限
+        #     userFunctionInterface = crudmixin.FunctionInterface(
+        #     ).getFunctionInterfaceByFunctions(functions)
+        #     userFunctionInterfaceList = [
+        #         item.interfaceId for item in userFunctionInterface
+        #     ]
+        #     interfacedb = crudmixin.Interface().getByIds(
+        #         userFunctionInterfaceList)
+        #     dict_interface = [dbObjFormatToJson(item) for item in interfacedb]
 
-            if not dict_interface:
-                self.send_fail_json(msg="没有权限")
-                return
+        #     if not dict_interface:
+        #         self.send_fail_json(msg="没有权限")
+        #         return
 
-            LOG.debug("user_perrssion: {}".format(dict_interface))
+        #     LOG.debug("user_perrssion: {}".format(dict_interface))
 
-            request_path = self.request.path
-            end_path = request_path.split("/")[-1]
-            ret = re.match(uuid_re, end_path)
-            if ret:
-                start_path = "/".join(request_path.split("/")[:-1])
-                request_path = "{}/:id".format(start_path)
-                LOG.debug("now request path: {}".format(request_path))
-            req_method = self.request.method
+        #     request_path = self.request.path
+        #     end_path = request_path.split("/")[-1]
+        #     ret = re.match(uuid_re, end_path)
+        #     if ret:
+        #         start_path = "/".join(request_path.split("/")[:-1])
+        #         request_path = "{}/:id".format(start_path)
+        #         LOG.debug("now request path: {}".format(request_path))
+        #     req_method = self.request.method
 
-            LOG.debug(req_method)
+        #     LOG.debug(req_method)
 
-            flat = False
-            for item in dict_interface:
-                if item["path"] == request_path and item["method"].upper(
-                ) == req_method.upper():
-                    LOG.debug("有权限")
-                    flat = True
-                    break
-            if not flat:
-                self.send_fail_json(msg="没有权限")
-                return
-            return func(self, *args, **kwargs)
-
+        #     flat = False
+        #     for item in dict_interface:
+        #         if item["path"] == request_path and item["method"].upper(
+        #         ) == req_method.upper():
+        #             LOG.debug("有权限")
+        #             flat = True
+        #             break
+        #     if not flat:
+        #         self.send_fail_json(msg="没有权限")
+        #         return
+        check_permission = api_check_permission(self,self.request.path)
+        if not check_permission:
+            self.send_fail(msg="没有权限")
+            return 
+        return func(self, *args, **kwargs)
     return wrapper
