@@ -21,7 +21,6 @@ sentry_sdk.init(
 
 
 class AppMain:
-
     def __init__(self):
         PATH_APP_ROOT = os.path.abspath(
             os.path.join(os.path.abspath(os.path.dirname(__file__))))

@@ -73,15 +73,16 @@ def decode_md_code(md_code):
     try:
         payload = jwt.decode(md_code, JWT_SECRET, algorithms=[JWT_ALGORITHM])
         info = payload.get("info")
-    except:
+    except Exception:
         info = False
     return info
+
 
 def get_user_info_bytoken(auth):
     LOG.debug("请求的认证信息为:{}".format(auth))
     try:
-        token_data = auth.split(" ") 
-        jwt_prefix = token_data[0] # 头部组合
+        token_data = auth.split(" ")
+        jwt_prefix = token_data[0]  # 头部组合
         jwt_token = token_data[1]  # 真实token信息
         payload = decode_token(jwt_token)
     except (jwt.DecodeError, jwt.ExpiredSignatureError) as e:
@@ -90,10 +91,11 @@ def get_user_info_bytoken(auth):
     if jwt_prefix != "SuperManager":
         return False, "TOKEN IS INVALID!!!"
     if payload["userId"]:
-        return True,payload
+        return True, payload
     return False, "TOKEN IS INVALID!!!"
 
-def api_check_permission(self,check_path, check_method):
+
+def api_check_permission(self, check_path, check_method):
     user = crudmixin.User()
     isAdmin = user.isAdmin(self.user_id)
     if isAdmin:
@@ -123,8 +125,7 @@ def api_check_permission(self,check_path, check_method):
         userFunctionInterfaceList = [
             item.interfaceId for item in userFunctionInterface
         ]
-        interfacedb = crudmixin.Interface().getByIds(
-            userFunctionInterfaceList)
+        interfacedb = crudmixin.Interface().getByIds(userFunctionInterfaceList)
         dict_interface = [dbObjFormatToJson(item) for item in interfacedb]
 
         if not dict_interface:
@@ -152,7 +153,6 @@ def api_check_permission(self,check_path, check_method):
         if flat:
             return True
         return False
-
 
 
 def auth_middleware():
@@ -217,7 +217,7 @@ def PermissionCheck(func):
             if not self.user_id:
                 self.send_fail(msg="没有权限,请联系管理员")
                 return
-        except:
+        except Exception:
             self.send_fail(msg="没有权限,请联系管理员")
             return
 
@@ -284,9 +284,11 @@ def PermissionCheck(func):
         #     if not flat:
         #         self.send_fail_json(msg="没有权限")
         #         return
-        check_permission = api_check_permission(self,self.request.path,self.request.method)
+        check_permission = api_check_permission(self, self.request.path,
+                                                self.request.method)
         if not check_permission:
             self.send_fail(msg="没有权限")
-            return 
+            return
         return func(self, *args, **kwargs)
+
     return wrapper

@@ -9,5 +9,5 @@
 '''
 RBAC_NAME = "rbac"
 RBAC_DB = "mysql+pymysql://rbac:123456@192.168.2.69:12502/cute_rbac?charset=utf8"
-RBAC_DB_ECHO = True
+RBAC_DB_ECHO = False
 ADMIN_LIST = ["youshumin", "superuser"]

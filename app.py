@@ -4,7 +4,7 @@
 @Author: Youshumin
 @Date: 2019-08-21 11:13:46
 @LastEditors: Please set LastEditors
-@LastEditTime: 2019-11-28 10:34:37
+@LastEditTime: 2019-11-28 17:41:17
 '''
 import logging
 import logging.config
@@ -74,7 +74,6 @@ class RouteHandler(object):
 class DB(object):
     """初始化数据库"""
     def __init__(self):
-
         self.db = mysqlHanlder()
 
     def rbac_init(self):

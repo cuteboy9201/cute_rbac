@@ -58,7 +58,6 @@ class Bezier(object):
     """
         贝塞尔曲线
     """
-
     def __init__(self):
         self.tsequence = tuple([t / 20.0 for t in range(21)])
         self.beziers = {}
@@ -88,7 +87,6 @@ class Captcha(object):
     """
         验证码
     """
-
     def __init__(self, width, height, fonts=None, color=None):
         self._image = None
         self._fonts = fonts if fonts else [

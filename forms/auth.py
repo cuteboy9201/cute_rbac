@@ -7,7 +7,8 @@
 @LastEditTime: 2019-11-13 10:33:34
 @Description: 
 '''
-from oslo.form.fields import BoolField, EmailField, IntegerField, StringField, StringListField
+from oslo.form.fields import (BoolField, EmailField, IntegerField, StringField,
+                              StringListField)
 from oslo.form.form import Form
 
 

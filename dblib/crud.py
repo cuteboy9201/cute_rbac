@@ -128,7 +128,7 @@ class User(MixDbObj):
                 self.session.delete(user)
                 self.session.commit()
                 return True, ""
-        except:
+        except Exception:
             self.session.rollback()
             return False, ""
 
@@ -271,7 +271,8 @@ class Menu(object):
 
     def getParentMenu(self):
         menu = self.db_obj.filter(self.table.parentId == "0",
-                                  self.table.isLock == False).order_by(asc(self.table.sort)).all()
+                                  self.table.isLock == False).order_by(
+                                      asc(self.table.sort)).all()
         return menu
 
     def getMenuListByIds(self, ids):
