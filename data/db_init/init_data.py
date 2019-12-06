@@ -235,6 +235,7 @@ def interface_option():
 
 
 def init_base():
+
     user_list = []
     menu_list = []
     route_list = []
@@ -270,7 +271,7 @@ def init_base():
         else:
             raise
         interface_option()
-    except:
+    except Exception:
         if route_list:
             for del_route in route_list:
                 route.delById(del_route.id)

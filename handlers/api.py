@@ -1,7 +1,7 @@
 '''
 @Author: your name
 @Date: 2019-11-28 10:05:17
-@LastEditTime: 2019-11-29 09:41:59
+@LastEditTime: 2019-11-29 11:00:16
 @LastEditors: Please set LastEditors
 @Description: In User Settings Edit
 @FilePath: /rbac/handlers/api.py
@@ -30,19 +30,25 @@ class checkPermissionHandler(MixinRequestHandler):
             self.send_fail(msg="没有权限")
             return
         code, auth_info = get_user_info_bytoken(check_auth)
-        if code:
-            try:
-                LOG.debug("jwt解密信息为: %s", auth_info)
-                # auth_info = json.loads(auth_info)
-                self.user_id = auth_info["userId"]
-            except Exception as e:
-                LOG.error(str(e))
-                self.send_fail(msg="没有权限")
-                return
+        LOG.debug("get_user_info_bytoken: {} {}".format(code, auth_info))
+
+        if not code:
+            self.send_fail(msg="没有权限")
+            return
+
+        try:
+            LOG.debug("jwt解密信息为: %s", auth_info)
+            # auth_info = json.loads(auth_info)
+            self.user_id = auth_info["userId"]
+        except Exception as e:
+            LOG.error(str(e))
+            self.send_fail(msg="没有权限")
+            return
 
         if not self.user_id:
             self.send_fail(msg="没有权限")
             return
+            
         check_permission = api_check_permission(self, check_path, check_method)
 
         if check_permission:

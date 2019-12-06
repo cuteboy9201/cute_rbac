@@ -4,7 +4,7 @@
 @Author: Youshumin
 @Date: 2019-11-12 16:55:25
 @LastEditors: Please set LastEditors
-@LastEditTime: 2019-11-28 17:30:37
+@LastEditTime: 2019-11-29 11:15:24
 @Description: 认证相关...
     md5_password  密码加密
     create_token  创建token
@@ -85,7 +85,7 @@ def get_user_info_bytoken(auth):
         jwt_prefix = token_data[0]  # 头部组合
         jwt_token = token_data[1]  # 真实token信息
         payload = decode_token(jwt_token)
-    except (jwt.DecodeError, jwt.ExpiredSignatureError) as e:
+    except (IndexError, jwt.DecodeError, jwt.ExpiredSignatureError) as e:
         LOG.error(str(e))
         return False, "TOKEN IS INVALID!!!"
     if jwt_prefix != "SuperManager":
@@ -182,10 +182,12 @@ def auth_middleware():
                 #     return
                 code, msg = get_user_info_bytoken(jwt_token)
                 if not code:
+                    # 解析认证信息失败...刷新token,退出登陆
                     self.send_fail(msg=msg, code=400, status=400)
                     return
                 self.user_id = msg["userId"]
             else:
+                # 没有token信息的时候, 刷新页面退出登陆态
                 self.send_fail_json(
                     msg="Login timeout please refresh and re-login",
                     code=401,
