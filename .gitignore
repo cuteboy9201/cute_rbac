@@ -3,7 +3,7 @@ __pycache__
 *.pyo
 *.log
 .DS_Store
-*.json
+# *.json
 settings.json
 .pytest_cache
 .env
