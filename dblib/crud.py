@@ -3,8 +3,8 @@
 '''
 @Author: Youshumin
 @Date: 2019-11-12 16:33:41
-@LastEditors: Please set LastEditors
-@LastEditTime: 2019-11-26 10:04:13
+@LastEditors  : YouShumin
+@LastEditTime : 2019-12-26 10:50:10
 @Description: 
 '''
 
@@ -44,6 +44,11 @@ class MixDbObj(object):
                 LOG.error("delete_menu: {}".format(e))
                 self.session.rollback()
                 return False
+
+    def getAllByKeyValue(self, key, value):
+        item = {key: value}
+        db = self.db_obj.filter_by(**item).all()
+        return db
 
     def __del__(self):
         self.session.close()
@@ -156,11 +161,12 @@ class User(MixDbObj):
         return True, totalCount, get_user_db
 
 
-class Role(object):
+class Role(MixDbObj):
     def __init__(self):
         self.table = ORM.RbacRole
-        self.session = session_type
-        self.db_obj = self.session.query(self.table)
+        super(Role, self).__init__(self.table)
+        # self.session = session_type
+        # self.db_obj = self.session.query(self.table)
 
     def getRoleById(self, id):
         role = self.db_obj.filter(self.table.id == id).first()

@@ -1,8 +1,8 @@
 '''
 @Author: your name
 @Date: 2019-11-28 10:05:17
-@LastEditTime: 2019-11-29 11:00:16
-@LastEditors: Please set LastEditors
+@LastEditTime : 2019-12-26 10:56:03
+@LastEditors  : YouShumin
 @Description: In User Settings Edit
 @FilePath: /rbac/handlers/api.py
 '''
@@ -12,7 +12,7 @@ import logging
 from oslo.web.requesthandler import MixinRequestHandler
 from oslo.web.route import route
 from tornado.gen import coroutine
-
+from dblib.crud import User, Role
 from utils.auth import api_check_permission, get_user_info_bytoken
 
 LOG = logging.getLogger(__name__)
@@ -48,11 +48,33 @@ class checkPermissionHandler(MixinRequestHandler):
         if not self.user_id:
             self.send_fail(msg="没有权限")
             return
-            
+
         check_permission = api_check_permission(self, check_path, check_method)
 
         if check_permission:
             self.send_ok(data="")
             return
         self.send_fail(msg="没有权限")
+        return
+
+
+@route("/rbac/select/")
+class rbacSelectHandler(MixinRequestHandler):
+    @coroutine
+    def get(self):
+        db_info = []
+        req_data = self.request_body()
+        msg_id = req_data.get("msg_id", None)
+        if msg_id == "role":
+            role = Role()
+            db_info = role.getAllByKeyValue("isLock", 0)
+        elif msg_id == "user":
+            user = User()
+            db_info = user.getAllByKeyValue("isLock", 0)
+        else:
+            return self.send_fail(msg="")
+        ret_info = []
+        for item in db_info:
+            ret_info.append(dict(id=item.id, value=item.name))
+        self.send_ok(data=ret_info)
         return
