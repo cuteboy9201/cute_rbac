@@ -3,8 +3,8 @@
 '''
 @Author: Youshumin
 @Date: 2019-08-21 11:13:46
-@LastEditors: Youshumin
-@LastEditTime: 2019-11-13 17:57:09
+@LastEditors  : YouShumin
+@LastEditTime : 2020-01-03 06:36:19
 @Description:  程序启动文件 提供启动停止功能...
 '''
 import os
@@ -12,12 +12,12 @@ import sys
 
 from tornado import options
 
-import sentry_sdk
-from sentry_sdk.integrations.tornado import TornadoIntegration
+# import sentry_sdk
+# from sentry_sdk.integrations.tornado import TornadoIntegration
 
-sentry_sdk.init(
-    dsn="https://b1696404710445e79550eb272ab9b5c1@sentry.io/1818061",
-    integrations=[TornadoIntegration()])
+# sentry_sdk.init(
+#     dsn="https://b1696404710445e79550eb272ab9b5c1@sentry.io/1818061",
+#     integrations=[TornadoIntegration()])
 
 
 class AppMain:

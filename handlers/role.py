@@ -3,8 +3,8 @@
 '''
 @Author: Youshumin
 @Date: 2019-08-29 09:48:41
-@LastEditors: Youshumin
-@LastEditTime: 2019-11-14 17:26:05
+@LastEditors  : YouShumin
+@LastEditTime : 2020-01-13 03:51:31
 @Description: 
 '''
 import json
@@ -213,3 +213,19 @@ class RolePermissionSaveHanlder(MixinRequestHandler):
         else:
             self.send_fail_json(msg=msg)
         return
+
+
+@route("/rbac/role/getname")
+class publicRoleHandler(MixinRequestHandler):
+    @gen.coroutine
+    def get(self):
+        req_data = self.request_body()
+        roleId = req_data.get("roleId")
+        role = crudmixin.Role()
+        roleDB = role.getById(roleId)
+        if roleDB:
+            self.send_ok(data=roleDB.name)
+            return
+        else:
+            self.send_fail(msg="")
+            return

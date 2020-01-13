@@ -3,8 +3,8 @@
 '''
 @Author: Youshumin
 @Date: 2019-08-26 10:26:19
-@LastEditors: Please set LastEditors
-@LastEditTime: 2019-11-28 10:03:45
+@LastEditors  : YouShumin
+@LastEditTime : 2020-01-13 04:06:46
 '''
 
 import logging
@@ -29,7 +29,6 @@ LOG = logging.getLogger(__name__)
 
 @route("/rbac/user/info")
 class UserInfoHandler(MixinRequestHandler):
-
     @auth_middleware()
     def get(self):
 
@@ -133,7 +132,6 @@ class UserInfoHandler(MixinRequestHandler):
 
 @route("/rbac/user/save")
 class UserSaveHandler(MixinRequestHandler):
-
     @auth_middleware()
     @PermissionCheck
     @gen.coroutine
@@ -168,7 +166,6 @@ class UserSaveHandler(MixinRequestHandler):
 
 @route("/rbac/user/del")
 class UserDelHandler(MixinRequestHandler):
-
     @auth_middleware()
     @PermissionCheck
     @gen.coroutine
@@ -197,7 +194,6 @@ class UserDelHandler(MixinRequestHandler):
 
 @route("/rbac/user/pagedlist")
 class UserPagesListHandler(MixinRequestHandler):
-
     @auth_middleware()
     @PermissionCheck
     @gen.coroutine
@@ -229,7 +225,6 @@ class UserPagesListHandler(MixinRequestHandler):
 
 @route("/rbac/user/editrole/")
 class EdidUserRoleInfoHandler(MixinRequestHandler):
-
     @auth_middleware()
     @PermissionCheck
     @gen.coroutine
@@ -257,7 +252,6 @@ class EdidUserRoleInfoHandler(MixinRequestHandler):
     "/rbac/user/(?P<uid>[a-f\d]{8}-[a-f\d]{4}-[a-f\d]{4}-[a-f\d]{4}-[a-f\d]{12})"
 )
 class userGetHandler(MixinRequestHandler):
-
     @auth_middleware()
     @PermissionCheck
     @gen.coroutine
@@ -360,7 +354,6 @@ class adminResetPassHandler(MixinRequestHandler):
 
 @route("/rbac/user/batchdel")
 class RoleBatchDelHandler(MixinRequestHandler):
-
     @auth_middleware()
     @PermissionCheck
     @gen.coroutine
@@ -392,3 +385,19 @@ class RoleBatchDelHandler(MixinRequestHandler):
             data = ""
             self.send_ok(data=data)
         return
+
+
+@route("/rbac/user/getname")
+class publicUserHandler(MixinRequestHandler):
+    @gen.coroutine
+    def get(self):
+        req_data = self.request_body()
+        userId = req_data.get("userId")
+        user = crudmixin.User()
+        userDB = user.getById(userId)
+        if userDB:
+            self.send_ok(data=userDB.realName)
+            return
+        else:
+            self.send_fail(msg="")
+            return
