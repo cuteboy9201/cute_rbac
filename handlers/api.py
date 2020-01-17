@@ -1,10 +1,12 @@
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
 '''
-@Author: your name
-@Date: 2019-11-28 10:05:17
-@LastEditTime : 2019-12-26 10:56:03
-@LastEditors  : YouShumin
-@Description: In User Settings Edit
-@FilePath: /rbac/handlers/api.py
+@Author: YouShumin
+@Date: 2020-01-17 16:49:00
+@LastEditTime: 2020-01-17 17:18:49
+@LastEditors: YouShumin
+@Description: 
+@FilePath: /cute_rbac/handlers/api.py
 '''
 import json
 import logging
@@ -27,26 +29,26 @@ class checkPermissionHandler(MixinRequestHandler):
         check_auth = req_data.get("check_auth", [])
         check_method = req_data.get("check_method", [])
         if not check_auth or not check_path or not check_method:
-            self.send_fail(msg="没有权限")
+            self.send_fail(msg=u"没有权限")
             return
         code, auth_info = get_user_info_bytoken(check_auth)
         LOG.debug("get_user_info_bytoken: {} {}".format(code, auth_info))
 
         if not code:
-            self.send_fail(msg="没有权限")
+            self.send_fail(msg=u"没有权限")
             return
 
         try:
-            LOG.debug("jwt解密信息为: %s", auth_info)
+            LOG.debug(u"jwt解密信息为: %s", auth_info)
             # auth_info = json.loads(auth_info)
             self.user_id = auth_info["userId"]
         except Exception as e:
             LOG.error(str(e))
-            self.send_fail(msg="没有权限")
+            self.send_fail(msg=u"没有权限")
             return
 
         if not self.user_id:
-            self.send_fail(msg="没有权限")
+            self.send_fail(msg=u"没有权限")
             return
 
         check_permission = api_check_permission(self, check_path, check_method)
@@ -54,7 +56,7 @@ class checkPermissionHandler(MixinRequestHandler):
         if check_permission:
             self.send_ok(data="")
             return
-        self.send_fail(msg="没有权限")
+        self.send_fail(msg=u"没有权限")
         return
 
 

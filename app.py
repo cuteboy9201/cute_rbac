@@ -3,8 +3,8 @@
 '''
 @Author: Youshumin
 @Date: 2019-08-21 11:13:46
-@LastEditors: Please set LastEditors
-@LastEditTime: 2019-11-28 17:41:17
+@LastEditors  : YouShumin
+@LastEditTime : 2020-01-17 17:14:53
 '''
 import logging
 import logging.config
@@ -46,6 +46,8 @@ class LogHandler(object):
 
 p_version = sys.version_info.major
 if p_version == 2:
+    reload(sys)
+    sys.setdefaultencoding('utf8')
     LogHandler()
 
 

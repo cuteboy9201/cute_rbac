@@ -26,4 +26,4 @@ PROJECT_NAME = "CuTeeyes"
 ALLOW_HOST = ["http://192.168.2.108:4445", "http://192.168.2.108:8080"]
 LOGFILE = "/data/logs/dev_rbac.log"
 HOST = "0.0.0.0"
-PORT = 18080
+PORT = 3001
