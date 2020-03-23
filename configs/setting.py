@@ -3,8 +3,8 @@
 '''
 @Author: Youshumin
 @Date: 2019-10-11 11:24:53
-@LastEditors: Youshumin
-@LastEditTime: 2019-11-18 17:24:20
+@LastEditors: YouShumin
+@LastEditTime: 2020-03-23 17:15:58
 @Description: 
 '''
 
@@ -24,6 +24,6 @@ PATH_APP_ROOT = os.path.abspath(
 COOKIE_SECRET = "0wEE^@!TKGwbC0p@nyY4*Cm*8ojzulHC48HT620YJl^zE6qE"
 PROJECT_NAME = "CuTeeyes"
 ALLOW_HOST = ["http://192.168.2.108:4445", "http://192.168.2.108:8080"]
-LOGFILE = "/data/logs/dev_rbac.log"
+LOGFILE = "/Users/youshumin/logs/dev_rbac.log"
 HOST = "0.0.0.0"
 PORT = 3001

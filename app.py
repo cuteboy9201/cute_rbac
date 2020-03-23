@@ -4,51 +4,51 @@
 @Author: Youshumin
 @Date: 2019-08-21 11:13:46
 @LastEditors  : YouShumin
-@LastEditTime : 2020-01-17 17:14:53
+@LastEditTime : 2020-01-19 16:48:06
 '''
 import logging
 import logging.config
 import os
 import sys
+
 import tornado.httpserver
 import tornado.ioloop
+import tornado.log
 import tornado.options
 import tornado.web
+from configs.setting import (ALLOW_HOST, COOKIE_SECRET, HOST, LOGFILE, PORT,
+                             PROJECT_NAME)
 from oslo.db.module import mysqlHanlder
 from tornado.log import enable_pretty_logging
 from tornado.options import define, options
 
-from configs.setting import (ALLOW_HOST, COOKIE_SECRET, HOST, LOGFILE, PORT,
-                             PROJECT_NAME)
-
 debug = os.environ.get("RUN_ENV")
-
+if debug == "prod":
+    options.log_file_prefix = LOGFILE
+    options.log_rotate_mode = "time"
+    options.log_rotate_when = "D"
+    options.log_rotate_interval = 1
+    options.log_file_num_backups = 30
+    options.log_to_stderr = False
 LOG = logging.getLogger(__name__)
 
 
-class LogHandler(object):
-    """设置tornado 日志信息 当设置RUN_ENV为prod的时候进行文件输出,否则控制台
-       python3 会有问题... 不是大问题, 不在细化研究...使用supervisor管理python
+class LogHandler(tornado.log.LogFormatter):
+    """
+        设置tornado 日志信息 当设置RUN_ENV为prod的时候进行文件输出,否则控制台
+        python3 会有问题... 不是大问题, 不在细化研究...使用supervisor管理python
     """
     def __init__(self):
-        if debug == "prod":
-            define("log_file_prefix", default=LOGFILE)
-            define(
-                "log_rotate_mode",
-                default="time",
-            )
-            define("log_rotate_when", default="D")
-            define("log_rotate_interval", default=1)
-            define("log_file_num_backups", default=60)
-            define("log_to_stderr", default=False)
-        super(LogHandler, self).__init__()
+        super(LogHandler, self).__init__(
+            fmt=
+            '%(color)s[%(asctime)s %(filename)s:%(funcName)s:%(lineno)d %(levelname)s]%(end_color)s %(message)s',
+            datefmt='%Y-%m-%d %H:%M:%S')
 
 
 p_version = sys.version_info.major
 if p_version == 2:
     reload(sys)
     sys.setdefaultencoding('utf8')
-    LogHandler()
 
 
 class RouteHandler(object):
@@ -120,6 +120,7 @@ class WebApp():
         LOG.info(options.allow_host)
 
     def run(self):
+        [i.setFormatter(LogHandler()) for i in logging.getLogger().handlers]
         enable_pretty_logging()
         http_server = tornado.httpserver.HTTPServer(Application(),
                                                     xheaders=True)

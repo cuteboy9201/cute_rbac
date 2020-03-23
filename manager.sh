@@ -2,14 +2,14 @@
 ### 
 # @Author: Youshumin
 # @Date: 2019-11-15 12:01:01
- # @LastEditors: Please set LastEditors
- # @LastEditTime: 2019-11-25 16:26:46
+ # @LastEditors  : YouShumin
+ # @LastEditTime : 2020-01-19 15:07:15
 # @Description: 
 ###
 
 workdir=$(cd $(dirname $0); pwd) 
 export PYTHONPATH=$PYTHONPATH:${workdir} 
-
+export RUN_ENV=prod
 pyenv="${workdir}/.env/bin/python"
 
 start_main(){
