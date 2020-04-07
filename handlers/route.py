@@ -3,8 +3,8 @@
 '''
 @Author: Youshumin
 @Date: 2019-08-29 16:27:13
-@LastEditors: Youshumin
-@LastEditTime: 2019-11-14 16:09:16
+@LastEditors: YouShumin
+@LastEditTime: 2020-04-07 12:06:14
 @Description:
 '''
 
@@ -28,7 +28,6 @@ uuid_re = "(?P<id>[a-f\d]{8}-[a-f\d]{4}-[a-f\d]{4}-[a-f\d]{4}-[a-f\d]{12})"
 
 @route("/rbac/route/")
 class RouteHandlers(MixinRequestHandler):
-
     @auth_middleware()
     @PermissionCheck
     @coroutine
@@ -64,6 +63,7 @@ class RouteHandlers(MixinRequestHandler):
                 return self.send_fail_json(msg="组件和组件路径不能同时为空")
         else:
             form_error(self, form)
+
         route = Route()
         code, _ = route.saveRoute(parentId, name, path, title, component, sort,
                                   componentPath, isLock, cache, permission, id)
@@ -76,7 +76,6 @@ class RouteHandlers(MixinRequestHandler):
 
 @route(r"/rbac/route/{}".format(uuid_re))
 class RouteByIDHandlers(MixinRequestHandler):
-
     @auth_middleware()
     @PermissionCheck
     @coroutine
@@ -93,7 +92,7 @@ class RouteByIDHandlers(MixinRequestHandler):
                 "component": routeDB.component,
                 "componentPath": routeDB.componentPath,
                 "sort": routeDB.sort,
-                "cache": routeDB.cache
+                "cache": True if routeDB.cache else False
             }
             self.send_ok_json(data=data)
         else:
