@@ -60,6 +60,24 @@ class checkPermissionHandler(MixinRequestHandler):
         return
 
 
+@roure("/rbac/token/user/")
+class apiGetUserInfoByToken(MixinRequestHandler):
+    @coroutine
+    def post(slef):
+        req_data = self.request_body()
+        user_auth = req_data.get("user_auth", [])
+        if not user_auth:
+            self.send_fail(msg=u"参数不正确")
+            return
+        code, auth_info = get_user_info_bytoken(user_auth)
+        if not code:
+            self.send_fail(msg=u"数据不正确")
+            return
+        else:
+            self.send_ok(data=auth_info)
+            return
+
+
 @route("/rbac/select/")
 class rbacSelectHandler(MixinRequestHandler):
     @coroutine
