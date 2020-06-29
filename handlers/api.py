@@ -60,7 +60,7 @@ class checkPermissionHandler(MixinRequestHandler):
         return
 
 
-@roure("/rbac/token/user/")
+@route("/rbac/token/user/")
 class apiGetUserInfoByToken(MixinRequestHandler):
     @coroutine
     def post(slef):
